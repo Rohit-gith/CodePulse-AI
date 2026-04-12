@@ -1,22 +1,21 @@
-const Groq = require('groq-sdk');
+const Groq = require('groq-sdk')
+const Analysis = require('../models/Analysis')
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY
-});
+})
 
 const analyzeCode = async (req, res) => {
-
-  const { code, language } = req.body;
+  const { code, language } = req.body
 
   if (!code) {
     return res.status(400).json({
       status: 'error',
-      message: 'Code nahi mila! Kuch toh bhejo 😅'
-    });
+      message: 'Code nahi mila!'
+    })
   }
 
   try {
-
     const response = await groq.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       messages: [
@@ -37,23 +36,74 @@ const analyzeCode = async (req, res) => {
         }
       ],
       max_tokens: 1024
-    });
+    })
+
+    const result = response.choices[0].message.content
+
+    // ✅ Debug — console mein dekho
+    console.log('User:', req.user)
+    console.log('Saving analysis...')
+
+    // ✅ Save karo
+    await Analysis.create(
+      req.user.id,
+      language,
+      code,
+      result
+    )
+
+    console.log('Analysis saved! ✅')
 
     res.status(200).json({
       status: 'success',
       data: {
-        language: language,
-        analysis: response.choices[0].message.content
+        language,
+        analysis: result
       }
-    });
+    })
+
+  } catch (error) {
+    console.log('Error:', error.message)
+    res.status(500).json({
+      status: 'error',
+      message: error.message
+    })
+  }
+}
+// User ki history lo
+const getHistory = async (req, res) => {
+  try {
+    const history = await Analysis.findByUserId(req.user.id)
+
+    res.status(200).json({
+      status: 'success',
+      data: { history }
+    })
 
   } catch (error) {
     res.status(500).json({
       status: 'error',
       message: error.message
-    });
+    })
   }
+}
 
-};
+// User ki stats lo
+const getStats = async (req, res) => {
+  try {
+    const stats = await Analysis.getStats(req.user.id)
 
-module.exports = { analyzeCode };
+    res.status(200).json({
+      status: 'success',
+      data: { stats }
+    })
+
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message
+    })
+  }
+}
+
+module.exports = { analyzeCode, getHistory, getStats }

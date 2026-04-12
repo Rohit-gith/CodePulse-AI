@@ -1,11 +1,19 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
+const { 
+  analyzeCode, 
+  getHistory,
+  getStats 
+} = require('../controllers/analyzeController')
+const { protect } = require('../middleware/authMiddleware')
 
-// Controller import karo
-const { analyzeCode } = require('../controllers/analyzeController');
+// Code analyze — login zaroori
+router.post('/analyze', protect, analyzeCode)
 
-// POST route banao
-// Kyun POST? → User data bhej raha hai (code)
-router.post('/analyze', analyzeCode);
+// History — login zaroori
+router.get('/history', protect, getHistory)
 
-module.exports = router;
+// Stats — login zaroori
+router.get('/stats', protect, getStats)
+
+module.exports = router

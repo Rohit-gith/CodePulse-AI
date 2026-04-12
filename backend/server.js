@@ -12,9 +12,11 @@ app.use(express.json());
 
 // Routes Import Karo
 const analyzeRoutes = require('./routes/analyzeRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 // Routes Use Karo
 app.use('/api', analyzeRoutes);
+app.use('/api/auth', authRoutes);
 
 // Pehla Route — Test ke liye
 app.get('/', (req, res) => {
