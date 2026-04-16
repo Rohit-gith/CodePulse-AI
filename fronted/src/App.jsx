@@ -1,28 +1,47 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { ThemeProvider } from './context/ThemeContext'
+import { ThemeProvider, useTheme } from './context/ThemeContext'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Features from './components/Features'
+import Footer from './components/Footer'
 import Analyzer from './pages/Analyzer'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
 import './App.css'
-import Footer from './components/Footer'
 
 function Home() {
+  const { colors } = useTheme()
+
   return (
     <div style={{
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '100vh'
+      height: '100vh',
+      background: colors.bg,
+      overflow: 'hidden',
     }}>
-      <Navbar />
-      <div style={{ flex: 1 }}>
+
+      {/* Sticky Navbar */}
+      <div style={{ flexShrink: 0 }}>
+        <Navbar />
+      </div>
+
+      {/* Scrollable Content */}
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        background: colors.bg,
+      }}>
         <Hero />
         <Features />
       </div>
-      <Footer />
+
+      {/* Sticky Footer */}
+      <div style={{ flexShrink: 0 }}>
+        <Footer />
+      </div>
+
     </div>
   )
 }

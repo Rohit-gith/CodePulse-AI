@@ -1,3 +1,5 @@
+import { useTheme } from '../context/ThemeContext'
+
 const FEATURES = [
   {
     num: '01',
@@ -9,7 +11,7 @@ const FEATURES = [
       </svg>
     ),
     title: 'Bug detection',
-    desc: 'Syntax, logic, and runtime errors caught instantly.'
+    desc: 'Syntax, logic, runtime errors caught instantly.'
   },
   {
     num: '02',
@@ -50,14 +52,47 @@ const FEATURES = [
 ]
 
 function Features() {
+  const { colors } = useTheme()
+
   return (
-    <div style={styles.grid} id="features">
-      {FEATURES.map(feat => (
-        <div key={feat.num} style={styles.feat}>
-          <div style={styles.num}>{feat.num}</div>
-          <div style={styles.iconBox}>{feat.icon}</div>
-          <h3 style={styles.title}>{feat.title}</h3>
-          <p style={styles.desc}>{feat.desc}</p>
+    <div style={{
+      ...styles.grid,
+      borderBottom: `0.5px solid ${colors.border}`,
+      background: colors.bg,
+    }}
+      id="features"
+    >
+      {FEATURES.map((feat, index) => (
+        <div key={feat.num} style={{
+          ...styles.feat,
+          borderRight: index < 3
+            ? `0.5px solid ${colors.border}`
+            : 'none',
+        }}>
+          <div style={{
+            ...styles.num,
+          }}>
+            {feat.num}
+          </div>
+          <div style={{
+            ...styles.iconBox,
+            background: colors.bg2,
+            border: `0.5px solid ${colors.border}`,
+          }}>
+            {feat.icon}
+          </div>
+          <h3 style={{
+            ...styles.title,
+            color: colors.text,
+          }}>
+            {feat.title}
+          </h3>
+          <p style={{
+            ...styles.desc,
+            color: colors.textMuted,
+          }}>
+            {feat.desc}
+          </p>
         </div>
       ))}
     </div>
@@ -68,11 +103,9 @@ const styles = {
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)',
-    borderBottom: '0.5px solid #2a2a2a',
   },
   feat: {
     padding: '28px',
-    borderRight: '0.5px solid #2a2a2a',
   },
   num: {
     fontSize: '11px',
@@ -84,8 +117,6 @@ const styles = {
   iconBox: {
     width: '32px',
     height: '32px',
-    background: '#1a1a1a',
-    border: '0.5px solid #2a2a2a',
     borderRadius: '8px',
     display: 'flex',
     alignItems: 'center',
@@ -95,12 +126,10 @@ const styles = {
   title: {
     fontSize: '14px',
     fontWeight: '500',
-    color: '#e5e5e5',
     marginBottom: '6px',
   },
   desc: {
     fontSize: '12px',
-    color: '#666',
     lineHeight: '1.6',
   },
 }

@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { LANGUAGES } from '../config/languages'
 
+import { useTheme } from '../context/ThemeContext'
+
 function Hero() {
   const [selectedLang, setSelectedLang] = useState('python')
+  const { colors } = useTheme()
 
   const getExtension = (id) => {
     const map = {
@@ -15,145 +18,246 @@ function Hero() {
     return map[id] || 'txt'
   }
 
-  return (
-    <div style={styles.hero}>
+ return (
+  <div style={{
+    ...styles.hero,
+    borderBottom: `0.5px solid ${colors.border}`,
+    background: colors.bg,
+  }}>
 
-      {/* Left Side */}
-      <div style={styles.left}>
-
-        <div style={styles.kicker}>
-          <div style={styles.kickerLine}></div>
-          <span style={styles.kickerText}>AI-POWERED CODE REVIEW</span>
-        </div>
-
-        <h1 style={styles.h1}>
-          Write code.<br />
-          Ship <span style={styles.accent}>without</span><br />
-          the bugs.
-        </h1>
-
-        <p style={styles.desc}>
-          CodePulse AI reviews your code instantly — detects bugs,
-          scores quality, and gives expert suggestions.
-          Works with every major language.
-        </p>
-
-        <div style={styles.actions}>
-          <button style={styles.btnMain}
-          onClick={() => window.location.href='/analyzer'}
-        >
-            ▶ &nbsp;Analyze my code
-          </button>
-          <button style={styles.btnOutline}>
-            See demo
-          </button>
-        </div>
-
-        {/* Language Chips */}
-        <div style={styles.langSection}>
-          <div style={styles.langLabel}>SUPPORTED LANGUAGES</div>
-          <div style={styles.langGrid}>
-
-            {LANGUAGES.filter(l => l.active).map(lang => (
-              <div
-                key={lang.id}
-                onClick={() => setSelectedLang(lang.id)}
-                style={{
-                  ...styles.chip,
-                  ...(selectedLang === lang.id ? styles.chipActive : {})
-                }}
-              >
-                <div style={{
-                  ...styles.chipDot,
-                  background: lang.color
-                }}></div>
-                {lang.label}
-              </div>
-            ))}
-
-            {LANGUAGES.filter(l => !l.active).map(lang => (
-              <div key={lang.id} style={styles.chipDisabled}>
-                <div style={{
-                  ...styles.chipDot,
-                  background: lang.color
-                }}></div>
-                {lang.label}
-              </div>
-            ))}
-
-            <div style={styles.moreBtn}>+ More coming</div>
-          </div>
-
-          <p style={styles.comingSoon}>
-            Go, Rust, PHP — coming soon. New languages added regularly.
-          </p>
-        </div>
+    {/* Left Side */}
+    <div style={{
+      ...styles.left,
+      borderRight: `0.5px solid ${colors.border}`,
+    }}>
+      <div style={styles.kicker}>
+        <div style={styles.kickerLine}></div>
+        <span style={styles.kickerText}>
+          AI-POWERED CODE REVIEW
+        </span>
       </div>
 
-      {/* Right Side */}
-      <div style={styles.right}>
-        <div style={styles.panelTag}>LIVE PREVIEW</div>
+      <h1 style={{...styles.h1, color: colors.text}}>
+        Write code.<br />
+        Ship <span style={styles.accent}>without</span><br />
+        the bugs.
+      </h1>
 
-        {/* Code Card */}
-        <div style={styles.codeCard}>
-          <div style={styles.codeTop}>
-            <div style={styles.dots}>
-              <div style={{...styles.dot, background:'#E24B4A'}}></div>
-              <div style={{...styles.dot, background:'#EF9F27'}}></div>
-              <div style={{...styles.dot, background:'#639922'}}></div>
+      <p style={{...styles.desc, color: colors.textSub}}>
+        CodePulse AI reviews your code instantly — detects bugs,
+        scores quality, and gives expert suggestions.
+        Works with every major language.
+      </p>
+
+      <div style={styles.actions}>
+        <button
+          style={styles.btnMain}
+          onClick={() => window.location.href = '/analyzer'}
+        >
+          ▶ &nbsp;Analyze my code
+        </button>
+        <button style={{
+          ...styles.btnOutline,
+          border: `0.5px solid ${colors.border}`,
+          color: colors.text,
+        }}>
+          See demo
+        </button>
+      </div>
+
+      {/* Language Section */}
+      <div style={{
+        ...styles.langSection,
+        borderTop: `0.5px solid ${colors.border}`,
+      }}>
+        <div style={{
+          ...styles.langLabel,
+          color: colors.textMuted,
+        }}>
+          SUPPORTED LANGUAGES
+        </div>
+        <div style={styles.langGrid}>
+          {LANGUAGES.filter(l => l.active).map(lang => (
+            <div
+              key={lang.id}
+              onClick={() => setSelectedLang(lang.id)}
+              style={{
+                ...styles.chip,
+                background: selectedLang === lang.id
+                  ? colors.accentBg : colors.bg2,
+                border: selectedLang === lang.id
+                  ? '0.5px solid #1D9E75'
+                  : `0.5px solid ${colors.border}`,
+                color: selectedLang === lang.id
+                  ? '#1D9E75' : colors.textSub,
+              }}
+            >
+              <div style={{
+                ...styles.chipDot,
+                background: lang.color
+              }}></div>
+              {lang.label}
             </div>
-            <span style={styles.fileTag}>
-              main.{getExtension(selectedLang)}
-            </span>
+          ))}
+
+          {LANGUAGES.filter(l => !l.active).map(lang => (
+            <div key={lang.id} style={{
+              ...styles.chipDisabled,
+              background: colors.bg2,
+              border: `0.5px solid ${colors.border}`,
+              color: colors.textMuted,
+            }}>
+              <div style={{
+                ...styles.chipDot,
+                background: lang.color
+              }}></div>
+              {lang.label}
+            </div>
+          ))}
+
+          <div style={{
+            ...styles.moreBtn,
+            border: `0.5px dashed ${colors.border}`,
+            color: colors.textMuted,
+          }}>
+            + More coming
           </div>
-          <pre style={styles.codeBody}>
-            {LANGUAGES.find(l => l.id === selectedLang)?.example}
-          </pre>
         </div>
 
-        {/* Result Card */}
-        <div style={styles.resultCard}>
-          <div style={styles.resHead}>
-            <span style={styles.resTitle}>Analysis result</span>
-            <span style={styles.resBadge}>2 issues found</span>
-          </div>
-
-          <div style={styles.issue}>
-            <div style={{...styles.iconBox, background:'#2a1515', color:'#E24B4A'}}>
-              !
-            </div>
-            <div>
-              <div style={styles.issueTitle}>Missing argument — line 3</div>
-              <div style={styles.issueDesc}>
-                Function needs 2 args, got 1. Raises error at runtime.
-              </div>
-            </div>
-          </div>
-
-          <div style={styles.issue}>
-            <div style={{...styles.iconBox, background:'#2a2010', color:'#EF9F27'}}>
-              ⚠
-            </div>
-            <div>
-              <div style={styles.issueTitle}>No type hints or error handling</div>
-              <div style={styles.issueDesc}>
-                Add type hints and try/except for production readiness.
-              </div>
-            </div>
-          </div>
-
-          <div style={styles.scoreRow}>
-            <span style={styles.scoreLabel}>Quality</span>
-            <div style={styles.scoreBar}>
-              <div style={styles.scoreFill}></div>
-            </div>
-            <span style={styles.scoreVal}>2 / 10</span>
-          </div>
-        </div>
-
+        <p style={{
+          ...styles.comingSoon,
+          color: colors.textMuted,
+        }}>
+          Go, Rust, PHP — coming soon.
+        </p>
       </div>
     </div>
-  )
+
+    {/* Right Side */}
+    <div style={{
+      ...styles.right,
+      background: colors.bg2,
+    }}>
+      <div style={{
+        ...styles.panelTag,
+        color: colors.textMuted,
+      }}>
+        LIVE PREVIEW
+      </div>
+
+      {/* Code Card */}
+      <div style={{
+        ...styles.codeCard,
+        background: colors.bg,
+        border: `0.5px solid ${colors.border}`,
+      }}>
+        <div style={{
+          ...styles.codeTop,
+          borderBottom: `0.5px solid ${colors.border}`,
+          background: colors.bg3,
+        }}>
+          <div style={styles.dots}>
+            <div style={{...styles.dot,background:'#E24B4A'}}></div>
+            <div style={{...styles.dot,background:'#EF9F27'}}></div>
+            <div style={{...styles.dot,background:'#639922'}}></div>
+          </div>
+          <span style={{
+            ...styles.fileTag,
+            color: colors.textMuted,
+            background: colors.bg2,
+          }}>
+            main.{selectedLang === 'javascript' ? 'js'
+                 : selectedLang === 'java' ? 'java'
+                 : selectedLang === 'cpp' ? 'cpp'
+                 : selectedLang === 'c' ? 'c' : 'py'}
+          </span>
+        </div>
+        <pre style={{
+          ...styles.codeBody,
+          color: colors.codeColor,
+          background: colors.codeBg,
+        }}>
+          {LANGUAGES.find(l => l.id === selectedLang)?.example}
+        </pre>
+      </div>
+
+      {/* Result Card */}
+      <div style={{
+        ...styles.resultCard,
+        background: colors.bg,
+        border: `0.5px solid ${colors.border}`,
+      }}>
+        <div style={styles.resHead}>
+          <span style={{
+            ...styles.resTitle,
+            color: colors.text,
+          }}>
+            Analysis result
+          </span>
+          <span style={styles.resBadge}>2 issues found</span>
+        </div>
+
+        <div style={styles.issue}>
+          <div style={{
+            ...styles.iconBox,
+            background:'#FCEBEB',
+            color:'#A32D2D',
+          }}>!</div>
+          <div>
+            <div style={{
+              ...styles.issueTitle,
+              color: colors.text,
+            }}>
+              Missing argument — line 3
+            </div>
+            <div style={{
+              ...styles.issueDesc,
+              color: colors.textSub,
+            }}>
+              Function needs 2 args, got 1.
+            </div>
+          </div>
+        </div>
+
+        <div style={styles.issue}>
+          <div style={{
+            ...styles.iconBox,
+            background:'#FAEEDA',
+            color:'#854F0B',
+          }}>⚠</div>
+          <div>
+            <div style={{
+              ...styles.issueTitle,
+              color: colors.text,
+            }}>
+              No type hints
+            </div>
+            <div style={{
+              ...styles.issueDesc,
+              color: colors.textSub,
+            }}>
+              Add type hints for production code.
+            </div>
+          </div>
+        </div>
+
+        <div style={styles.scoreRow}>
+          <span style={{
+            ...styles.scoreLabel,
+            color: colors.textMuted,
+          }}>Quality</span>
+          <div style={{
+            ...styles.scoreBar,
+            background: colors.bg3,
+          }}>
+            <div style={styles.scoreFill}></div>
+          </div>
+          <span style={styles.scoreVal}>2 / 10</span>
+        </div>
+      </div>
+    </div>
+  </div>
+)
 }
 
 const styles = {
