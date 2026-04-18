@@ -7,7 +7,7 @@ const app = express()
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://codepulse-ai.vercel.app',
+    'https://code-pulse-ai-omega.vercel.app',
     /\.vercel\.app$/
   ],
   credentials: true
